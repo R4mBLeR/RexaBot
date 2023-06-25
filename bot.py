@@ -62,7 +62,6 @@ async def play(ctx, *, URL: str = None):
     elif ctx.message.author.voice.channel.id != voice_channel.id:
         await ctx.send('Музыка играет в другом канале')
         return
-
     if not URL.startswith('https'):
         videosSearch = VideosSearch(URL, limit=1)
         URL = videosSearch.result()['result'][0]['link']
@@ -172,9 +171,8 @@ async def _queue(ctx):
             title='Текущая очередь:', description=queue_, colour=0x00FF00)
         await ctx.send(embed=embed)
 
+
 # command block
-
-
 @bot.command(name='ban')
 @has_permissions(ban_members=True)
 async def ban(ctx, member: Member = None, *, reason=None):
