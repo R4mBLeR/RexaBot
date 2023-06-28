@@ -1,4 +1,4 @@
-# Rexa
+# RexaBot
 Discord bot for music, moderation and fun
 
 # Usage
