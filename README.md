@@ -9,4 +9,4 @@ Discord bot for music, moderation and fun
 `pip install -r requirements.txt`
 * **4.** Run *start.bat* file
 
-For start this bot you need have a python on your PC
+For start this bot you need have a [Python](https://www.python.org/downloads/) and [FFmpeg](https://ffmpeg.org/download.html) on your PC
