@@ -1,12 +1,12 @@
 # RexaBot
 Discord bot for music, moderation and fun
 
-# Usage
+# **installation**
 * **1.** Download and unpacking release archive
-* **3.** Replace *TOKEN* in config.py with your Telegram bot API token and save file
-* **4.** Run cmd as administrator in package with bot
-* **5.** Print in cmd this command:
-`pip install -r requirements.txt`
-* **4.** Run *start.bat* file
+* **2.** Replace *TOKEN* in \bot\config.py with your Telegram bot API token and save file
+* **3.** Run *init.bat* file
 
 For start this bot you need have a [Python](https://www.python.org/downloads/) and [FFmpeg](https://ffmpeg.org/download.html) on your PC
+
+## **Usage**
+Run *start.bat* file
