@@ -6,7 +6,6 @@ import requests
 
 
 def setup(bot: commands.Bot):
-    print('img is setup')
 
     @bot.command(name='gif')
     async def gif(ctx, tag=None):
