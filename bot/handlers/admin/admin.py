@@ -7,7 +7,6 @@ from asyncio import sleep
 
 
 def setup(bot: commands.Bot):
-    print('admin is setup')
 
     @bot.command(name='ban')
     @has_permissions(ban_members=True)
