@@ -29,7 +29,6 @@ async def PlayMusic(ctx):
 
 
 def setup(bot: commands.Bot):
-    print('music is setup')
 
     @bot.command(name='play')
     async def play(ctx, *, URL: str = None):
