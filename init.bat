@@ -1,4 +1,4 @@
 @echo off
-cd %cd%
-pip install -r requirements.txt
+cd .
+pip install -r requirements. txt
 pause
