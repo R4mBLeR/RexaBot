@@ -1,5 +1,5 @@
 # RexaBot
-Discord bot for music, moderation and fun
+Discord bot for music and fun
 
 # **installation**
 * **1.** Download and unpacking release archive
