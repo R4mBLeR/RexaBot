@@ -2,7 +2,7 @@
 Discord bot for music and fun
 
 # **installation**
-* **1.** Download and unpacking release archive
+* **1.** Download and unpacking archive
 * **2.** Replace *TOKEN* in \bot\config.py with your Telegram bot API token and save file
 * **3.** Run *init.bat* file
   
