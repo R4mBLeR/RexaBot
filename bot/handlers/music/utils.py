@@ -1,8 +1,8 @@
 from asyncio import sleep
 import discord
 
-YDL_OPTIONS = {'format': 'bestaudio/best',
- 'simulate': 'True', 'preferredquality': '192', 'preferredcodec': 'mp3', 'key': 'FFmpegExtractAudio'}
+YDL_OPTIONS = {'format': 'bestaudio/best', 'noplaylist': 'True',
+               'simulate': 'True', 'preferredquality': '192', 'preferredcodec': 'mp3', 'key': 'FFmpegExtractAudio'}
 FFMPEG_OPTIONS = {
     'before_options': '-reconnect 1 -reconnect_streamed 1 -reconnect_delay_max 5', 'options': '-vn'}
 
@@ -17,6 +17,14 @@ class Song:
         self.title = title
         self.duration = "%02d:%02d" % (duration // 60, duration % 60)
         self.SourceUrl = SourceUrl
+
+
+def add_song(video, URL, id):
+    SourceUrl = video['formats'][0]['url']
+    title = video['title']
+    duration = video['duration']
+    song = Song(URL, title, duration, SourceUrl)
+    queues[id].append(song)
 
 
 async def PlayMusic(ctx, player):
@@ -78,6 +86,8 @@ async def bot_in_ctx_voice(ctx):
 
 
 async def bot_is_playing(ctx):
+    if not await bot_in_ctx_voice(ctx):
+        return
     if len(queues[ctx.guild.id]) == 0 or not ctx.guild.id in queues:
         await send_embed(ctx, 'Музыка сейчас не играет', 0xFF0000)
         return False

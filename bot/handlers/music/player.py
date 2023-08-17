@@ -3,9 +3,9 @@ from discord.ext import commands
 from youtube_dl import YoutubeDL
 from youtubesearchpython import VideosSearch
 import asyncio
-from .utils import Song, YDL_OPTIONS, FFMPEG_OPTIONS, PlayMusic, disconnect_player
-from .utils import bot_in_ctx_voice, bot_is_playing, can_call_command, ctx_in_voice, get_player, send_embed
-from .utils import queues, players, music
+from .utils import YDL_OPTIONS, PlayMusic, disconnect_player
+from .utils import bot_in_ctx_voice, bot_is_playing, can_call_command, ctx_in_voice, get_player, send_embed, add_song
+from .utils import queues, music
 
 
 def setup(bot: commands.Bot):
@@ -30,18 +30,22 @@ def setup(bot: commands.Bot):
             URL = videosSearch.result()['result'][0]['link']
         with YoutubeDL(YDL_OPTIONS) as ydl:
             info = ydl.extract_info(URL, download=False)
-        SourceUrl = info['formats'][0]['url']
-        title = info.get('title', None)
-        duration = info.get('duration', None)
-        song = Song(URL, title, duration, SourceUrl)
-        queues[player.guild.id].append(song)
+        if 'playlist' in URL:
+            for video in info['entries']:
+                add_song(video, URL, player.guild.id)
+        else:
+            add_song(info, URL, player.guild.id)
         if not player.is_playing() and not player.is_paused():
             music[ctx.guild.id] = asyncio.create_task(PlayMusic(ctx, player))
         else:
+            title = queues[player.guild.id][0].title
+            duration = queues[player.guild.id][0].duration
+            if 'playlist' in URL:
+                title = info['title']
+                duration = ""
             embed = discord.Embed(
                 title=f'Добавлено в очередь: {title}', description=URL, colour=0xDE6D07)
-            embed.set_footer(text="%02d:%02d" %
-                             (duration // 60, duration % 60))
+            embed.set_footer(text=duration)
             await ctx.send(embed=embed)
     # music control commands
 
@@ -86,8 +90,8 @@ def setup(bot: commands.Bot):
         else:
             song = queues[ctx.guild.id][0]
             embed = discord.Embed(title='Текущая песня:',
-                                  description=f'{song.title}\n{song.url}', colour=0x00FF00)
-            embed.set_footer(text=f'Длительность {song.duration}')
+                                  description=song.title, colour=0x00FF00)
+            embed.set_footer(text=song.duration)
             await ctx.send(embed=embed)
 
     @bot.command(name='queue')
