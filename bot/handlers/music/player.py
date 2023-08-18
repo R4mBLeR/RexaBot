@@ -1,11 +1,12 @@
 import discord
 from discord.ext import commands
-from youtube_dl import YoutubeDL
+from yt_dlp import YoutubeDL
 from youtubesearchpython import VideosSearch
 import asyncio
 from .utils import YDL_OPTIONS, PlayMusic, disconnect_player
 from .utils import bot_in_ctx_voice, bot_is_playing, can_call_command, ctx_in_voice, get_player, send_embed, add_song
 from .utils import queues, music
+from pprint import pprint
 
 
 def setup(bot: commands.Bot):
@@ -28,19 +29,21 @@ def setup(bot: commands.Bot):
         if not URL.startswith('https'):
             videosSearch = VideosSearch(URL, limit=1)
             URL = videosSearch.result()['result'][0]['link']
-        with YoutubeDL(YDL_OPTIONS) as ydl:
-            info = ydl.extract_info(URL, download=False)
-        if 'playlist' in URL:
+        with YoutubeDL(YDL_OPTIONS) as ydlp:
+            info = ydlp.extract_info(URL, download=False)
+        if 'list' in URL:
             for video in info['entries']:
-                add_song(video, URL, player.guild.id)
+                add_song(video, player.guild.id, False)
         else:
-            add_song(info, URL, player.guild.id)
+            add_song(info, player.guild.id, True)
         if not player.is_playing() and not player.is_paused():
             music[ctx.guild.id] = asyncio.create_task(PlayMusic(ctx, player))
         else:
-            title = queues[player.guild.id][0].title
-            duration = queues[player.guild.id][0].duration
-            if 'playlist' in URL:
+            title = queues[player.guild.id][len(
+                queues[player.guild.id])-1].title
+            duration = queues[player.guild.id][len(
+                queues[player.guild.id])-1].duration
+            if 'list' in URL:
                 title = info['title']
                 duration = ""
             embed = discord.Embed(
@@ -100,14 +103,20 @@ def setup(bot: commands.Bot):
         if not await bot_is_playing(ctx):
             return
         else:
-            for i in range(len(queues[ctx.guild.id])):
+            rand = len(queues[ctx.guild.id])
+            footer = ""
+            if rand > 10:
+                rand = 10
+                footer = f"и ещё {len(queues[ctx.guild.id])-10} песен"
+            for i in range(rand):
                 song = queues[ctx.guild.id][i]
                 queue_ = queue_+song.title+'          '+song.duration+'\n'
             embed = discord.Embed(
                 title='Текущая очередь:', description=queue_, colour=0x00FF00)
+            embed.set_footer(text=footer)
             await ctx.send(embed=embed)
 
-    @bot.command(name='disconnect')
+    @bot.command(name='stop')
     async def disconnect(ctx):
         if not await ctx_in_voice(ctx):
             return
