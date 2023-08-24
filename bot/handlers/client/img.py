@@ -5,10 +5,13 @@ import xmltodict
 import requests
 
 
-def setup(bot: commands.Bot):
+class Img(commands.Cog):
 
-    @bot.command(name='gif')
-    async def gif(ctx, tag=None):
+    def __init__(self, bot):
+        self.bot = bot
+
+    @commands.command(name='gif')
+    async def gif(self, ctx, tag=None):
         if tag == None:
             response = requests.get(
                 "https://g.tenor.com/v1/search?limit=50&key=O4UDCVI14VWL")
@@ -23,8 +26,8 @@ def setup(bot: commands.Bot):
         embed.set_image(url=url)
         await ctx.send(embed=embed)
 
-    @bot.command(name='anime')
-    async def anime(ctx, tag=None):
+    @commands.command(name='anime')
+    async def anime(self, ctx, tag=None):
         if tag == None:
             response = requests.get(
                 "https://safebooru.org/index.php?page=dapi&s=post&q=index&limit=100")
