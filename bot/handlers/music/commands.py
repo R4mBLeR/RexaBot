@@ -30,9 +30,14 @@ class MusicCommands(commands.Cog):
             videosSearch = VideosSearch(URL, limit=1)
             URL = videosSearch.result()['result'][0]['link']
         info = download_song(URL)
-        if 'list' in URL:
-            for video in info['entries']:
-                add_song(video, player.guild.id, False)
+        if '_type' in info:
+            if info['_type'] == 'url':
+                URL = info['url']
+                info = download_song(URL)
+            if info['_type'] == 'playlist':
+                for video in info['entries']:
+                    if not video['title'] == '[Deleted video]' and not video['uploader_id'] == None:
+                        add_song(video, player.guild.id, False)
         else:
             add_song(info, player.guild.id, True)
         if not player.is_playing() and not player.is_paused():
